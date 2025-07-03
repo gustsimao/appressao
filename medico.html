@@ -1,0 +1,43 @@
+
+<!-- medico/login.html -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Médico</title>
+  <link rel="stylesheet" href="../css/estilo.css">
+</head>
+<body>
+  <div class="container">
+    <h2>Login do Médico</h2>
+    <input type="email" id="email" placeholder="E-mail"><br>
+    <input type="password" id="senha" placeholder="Senha"><br>
+    <button onclick="loginMedico()">Entrar</button>
+    <p>
+      <a href="cadastro.html">Cadastrar</a> | <a href="#">Esqueci a senha</a>
+    </p>
+  </div>
+  <script src="../js/api.js"></script>
+  <script>
+    async function loginMedico() {
+      const email = document.getElementById('email').value;
+      const senha = document.getElementById('senha').value;
+
+      const res = await fetch("https://meu-backend-4840.onrender.com/login-medico", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, senha })
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        localStorage.setItem("token", data.token);
+        window.location.href = "dashboard.html";
+      } else {
+        alert(data.erro || "Erro ao fazer login");
+      }
+    }
+  </script>
+</body>
+</html>
