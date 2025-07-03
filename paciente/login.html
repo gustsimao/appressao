@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login do Paciente</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      padding: 30px;
+    }
+    h2 {
+      text-align: center;
+    }
+    form {
+      max-width: 400px;
+      margin: 30px auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px #ccc;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      box-sizing: border-box;
+    }
+    .btn {
+      margin-top: 20px;
+      padding: 12px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      width: 100%;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .btn:hover {
+      background-color: #0056b3;
+    }
+    .links {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .links a {
+      display: block;
+      color: #007bff;
+      text-decoration: none;
+      margin-top: 5px;
+    }
+    .links a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Login do Paciente</h2>
+
+  <form id="formLogin">
+    <label for="email">E-mail</label>
+    <input type="email" id="email" required>
+
+    <label for="senha">Senha</label>
+    <input type="password" id="senha" required>
+
+    <button type="submit" class="btn">Entrar</button>
+  </form>
+
+  <div class="links">
+    <a href="cadastro.html">Ainda não tem conta? Cadastre-se</a>
+    <a href="#">Esqueci minha senha</a> <!-- Em breve -->
+  </div>
+
+  <script>
+    document.getElementById("formLogin").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value.trim();
+      const senha = document.getElementById("senha").value;
+
+      try {
+        const res = await fetch("https://meu-backend-4840.onrender.com/login-paciente", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, senha })
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.erro || "Erro ao fazer login");
+
+        // Salvar info no localStorage (ajustável futuramente com token JWT)
+        localStorage.setItem("pacienteId", data.paciente_id);
+        localStorage.setItem("pacienteNome", data.nome);
+
+        // Redirecionar para a tela de monitoramento
+        window.location.href = "monitoramento.html";
+      } catch (err) {
+        console.error("Erro:", err);
+        alert("Login falhou. Verifique e-mail e senha.");
+      }
+    });
+  </script>
+
+</body>
+</html>

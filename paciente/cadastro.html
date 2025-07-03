@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cadastro de Paciente</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      padding: 30px;
+    }
+    h2 {
+      text-align: center;
+    }
+    form {
+      max-width: 600px;
+      margin: 30px auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px #ccc;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      box-sizing: border-box;
+    }
+    .btn {
+      margin-top: 20px;
+      padding: 12px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      width: 100%;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .btn:hover {
+      background-color: #218838;
+    }
+    .back-link {
+      text-align: center;
+      margin-top: 20px;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Cadastro de Paciente</h2>
+
+  <form id="formPaciente">
+    <label for="nome">Nome completo</label>
+    <input type="text" id="nome" required>
+
+    <label for="email">E-mail</label>
+    <input type="email" id="email" required>
+
+    <label for="dataNascimento">Data de nascimento</label>
+    <input type="date" id="dataNascimento" required>
+
+    <label for="endereco">Endereço</label>
+    <input type="text" id="endereco" required>
+
+    <label for="codigoMedico">Código do Médico</label>
+    <input type="text" id="codigoMedico" maxlength="6" required>
+
+    <button type="submit" class="btn">Cadastrar</button>
+  </form>
+
+  <a class="back-link" href="login.html">← Já tem conta? Faça login</a>
+
+  <script>
+    document.getElementById("formPaciente").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const nome = document.getElementById("nome").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const data_nascimento = document.getElementById("dataNascimento").value;
+      const endereco = document.getElementById("endereco").value.trim();
+      const codigo_medico = document.getElementById("codigoMedico").value.trim().toUpperCase();
+
+      try {
+        const res = await fetch("https://meu-backend-4840.onrender.com/cadastro-paciente", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            nome,
+            email,
+            data_nascimento,
+            endereco,
+            codigo_medico
+          })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.erro || "Erro ao cadastrar paciente");
+
+        alert("Cadastro realizado com sucesso! Verifique seu e-mail para a senha de acesso.");
+        window.location.href = "login.html";
+      } catch (err) {
+        console.error("Erro:", err);
+        alert("Erro ao cadastrar. Verifique os dados ou tente mais tarde.");
+      }
+    });
+  </script>
+
+</body>
+</html>

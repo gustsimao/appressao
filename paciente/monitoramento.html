@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Monitoramento de Pressão</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      padding: 20px;
+    }
+    h2 {
+      text-align: center;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #ccc;
+    }
+    label, input, textarea, select, button {
+      display: block;
+      width: 100%;
+      margin-top: 10px;
+    }
+    input, textarea, select {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      padding: 12px;
+      border: none;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    table {
+      margin-top: 30px;
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #fff;
+    }
+    table, th, td {
+      border: 1px solid #aaa;
+    }
+    th, td {
+      padding: 10px;
+      text-align: center;
+    }
+    canvas {
+      margin-top: 30px;
+      width: 100% !important;
+      height: 400px !important;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Monitoramento de Pressão Arterial</h2>
+
+  <label for="pressao">Pressão (Ex: 120/80)</label>
+  <input type="text" id="pressao" placeholder="Ex: 130/85" required>
+
+  <label for="observacao">Observação</label>
+  <textarea id="observacao" placeholder="Ex: Após exercício físico"></textarea>
+
+  <button onclick="registrarPressao()">Registrar</button>
+
+  <canvas id="graficoPressao"></canvas>
+
+  <table id="tabelaRegistros">
+    <thead>
+      <tr>
+        <th>Data</th>
+        <th>Sistólica</th>
+        <th>Diastólica</th>
+        <th>Observação</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<script>
+  const API_URL = "https://meu-backend-4840.onrender.com";
+  const pacienteId = localStorage.getItem("pacienteId");
+
+  if (!pacienteId) {
+    alert("Acesso negado. Faça login novamente.");
+    window.location.href = "login.html";
+  }
+
+  let chart;
+  let observacoes = [];
+
+  async function carregarDados() {
+    try {
+      const res = await fetch(`${API_URL}/ver-registros/${pacienteId}`);
+      const dados = await res.json();
+
+      if (!res.ok) throw new Error(dados.erro || "Erro ao carregar");
+
+      const labels = dados.map(r => new Date(r.data).toLocaleString('pt-BR'));
+      const sistolica = dados.map(r => r.sistolica);
+      const diastolica = dados.map(r => r.diastolica);
+      observacoes = dados.map(r => r.observacao || '');
+
+      atualizarGrafico(labels, sistolica, diastolica);
+      atualizarTabela(dados);
+    } catch (err) {
+      console.error(err);
+      alert("Erro ao carregar dados.");
+    }
+  }
+
+  function atualizarGrafico(labels, sistolica, diastolica) {
+    const ctx = document.getElementById("graficoPressao").getContext("2d");
+
+    if (chart) chart.destroy();
+
+    chart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels,
+        datasets: [
+          {
+            label: "Sistólica",
+            borderColor: "red",
+            data: sistolica,
+            tension: 0.3
+          },
+          {
+            label: "Diastólica",
+            borderColor: "green",
+            data: diastolica,
+            tension: 0.3
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          tooltip: {
+            callbacks: {
+              afterBody: (tooltipItems) => {
+                const i = tooltipItems[0].dataIndex;
+                return observacoes[i] ? 'Observação: ' + observacoes[i] : '';
+              }
+            }
+          }
+        },
+        scales: {
+          y: { title: { display: true, text: "Pressão (mmHg)" } },
+          x: { title: { display: true, text: "Data/Hora" } }
+        }
+      }
+    });
+  }
+
+  function atualizarTabela(registros) {
+    const tbody = document.querySelector("#tabelaRegistros tbody");
+    tbody.innerHTML = "";
+
+    registros.forEach(r => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${new Date(r.data).toLocaleString("pt-BR")}</td>
+        <td>${r.sistolica}</td>
+        <td>${r.diastolica}</td>
+        <td>${r.observacao || ''}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  async function registrarPressao() {
+    const input = document.getElementById("pressao").value.trim();
+    const observacao = document.getElementById("observacao").value.trim();
+    const partes = input.split("/");
+
+    if (partes.length !== 2) {
+      alert("Formato inválido. Use: 130/80");
+      return;
+    }
+
+    const sistolica = parseInt(partes[0]);
+    const diastolica = parseInt(partes[1]);
+
+    if (isNaN(sistolica) || isNaN(diastolica)) {
+      alert("Valores inválidos.");
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_URL}/registrar-pressao`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ paciente_id: pacienteId, sistolica, diastolica, observacao })
+      });
+
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.erro || "Erro ao registrar");
+
+      document.getElementById("pressao").value = "";
+      document.getElementById("observacao").value = "";
+      await carregarDados();
+    } catch (err) {
+      console.error(err);
+      alert("Erro ao salvar o registro.");
+    }
+  }
+
+  // Inicializar ao carregar a página
+  window.onload = carregarDados;
+</script>
+
+</body>
+</html>
