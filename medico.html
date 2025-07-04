@@ -24,7 +24,7 @@
       const email = document.getElementById('email').value;
       const senha = document.getElementById('senha').value;
 
-      const res = await fetch("https://meu-backend-4840.onrender.com/login-medico", {
+      const res = await fetch("https://backend-press.onrender.com//login-medico", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, senha })
