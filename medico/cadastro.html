@@ -82,7 +82,7 @@
       const dados = Object.fromEntries(new FormData(form));
 
       try {
-        const response = await fetch('https://meu-backend-4840.onrender.com/cadastro-medico', {
+        const response = await fetch('https://backend-press.onrender.com/cadastro-medico', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(dados)
