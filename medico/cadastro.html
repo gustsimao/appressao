@@ -91,6 +91,11 @@
         const resultado = await response.json();
         if (!response.ok) throw new Error(resultado.erro || 'Erro ao cadastrar');
 
+        if (error) {
+  console.error("Erro ao inserir médico no Supabase:", error);
+  return res.status(500).json({ erro: 'Erro ao cadastrar médico.', detalhes: error.message });
+}
+
         mensagem.textContent = 'Cadastro realizado! Verifique seu e-mail.';
         setTimeout(() => window.location.href = 'login.html', 2000);
       } catch (err) {
