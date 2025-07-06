@@ -45,7 +45,7 @@
     const senha = document.getElementById('senha').value.trim();
 
     try {
-      const res = await fetch(`${API_URL}/auth/login-medico`, {
+      const  = await fetch(`${API_URL}/auth/login-medico`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, senha })
@@ -53,15 +53,12 @@
 
       const data = await res.json();
 
-      if (res.ok) {
-        // Armazena os dados completos do médico no localStorage
-        localStorage.setItem('medico', JSON.stringify(data.medico));
+     if (res.ok) {
+  localStorage.setItem('medico', JSON.stringify(data.medico)); // <-- ESSENCIAL
+  window.location.href = '/appressao/medico/dashboard.html';
+}
 
-        // Também pode salvar o nome/token separadamente se quiser
-        localStorage.setItem('nomeMedico', data.medico.nome);
-        // localStorage.setItem('token', data.token); // Se estiver usando token futuramente
 
-        window.location.href = '/appressao/medico/dashboard.html';
       } else {
         alert(data.erro || 'Erro no login');
       }
