@@ -36,37 +36,41 @@
     </div>
   </div>
 
-  <script>
-    const API_URL = "https://backend-press.onrender.com";
+ <script>
+  const API_URL = "https://backend-press.onrender.com";
 
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('email').value.trim();
-      const senha = document.getElementById('senha').value.trim();
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('email').value.trim();
+    const senha = document.getElementById('senha').value.trim();
 
-      try {
-        const res = await fetch(`${API_URL}/auth/login-medico`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, senha })
-        });
+    try {
+      const res = await fetch(`${API_URL}/auth/login-medico`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, senha })
+      });
 
-        const data = await res.json();
+      const data = await res.json();
 
-        if (res.ok) {
-          // Suponha que o backend retorna um token e o nome do médico
-          localStorage.setItem('token', data.token);
-          localStorage.setItem('nomeMedico', data.nome);
-          window.location.href = '/appressao/medico/dashboard.html'; // ou listar-pacientes.html
-        } else {
-          alert(data.erro || 'Erro no login');
-        }
-      } catch (error) {
-        alert('Erro ao conectar com o servidor');
-        console.error(error);
+      if (res.ok) {
+        // Armazena os dados completos do médico no localStorage
+        localStorage.setItem('medico', JSON.stringify(data.medico));
+
+        // Também pode salvar o nome/token separadamente se quiser
+        localStorage.setItem('nomeMedico', data.medico.nome);
+        // localStorage.setItem('token', data.token); // Se estiver usando token futuramente
+
+        window.location.href = '/appressao/medico/dashboard.html';
+      } else {
+        alert(data.erro || 'Erro no login');
       }
-    });
-    localStorage.setItem('medico', JSON.stringify(resultado.medico)); // <-- ESSA LINHA
-  </script>
+    } catch (error) {
+      alert('Erro ao conectar com o servidor');
+      console.error(error);
+    }
+  });
+</script>
+
 </body>
 </html>
