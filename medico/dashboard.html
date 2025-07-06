@@ -30,15 +30,37 @@
     .btn:hover {
       background-color: #0056b3;
     }
+    .btn.sair {
+      background-color: #dc3545;
+    }
   </style>
 </head>
 <body>
 
-  <h2>Bem-vindo, Doutor(a)</h2>
+  <h2 id="boasVindas">Bem-vindo, Doutor(a)</h2>
 
   <a href="listar-pacientes.html" class="btn">Acompanhar Pacientes</a>
   <a href="cadastrar-paciente.html" class="btn">Cadastrar Novo Paciente</a>
-  <a href="../index.html" class="btn" style="background-color: #dc3545;">Sair</a>
+  <a href="#" class="btn sair" onclick="sair()">Sair</a>
+
+  <script>
+    const medico = JSON.parse(localStorage.getItem('medico'));
+
+    if (!medico) {
+      alert("Você precisa estar logado como médico.");
+      window.location.href = "/appressao/medico/login.html";
+    } else {
+      // Personaliza a mensagem de boas-vindas
+      document.getElementById('boasVindas').textContent = `Bem-vindo, Dr(a). ${medico.nome}`;
+    }
+
+    function sair() {
+      localStorage.removeItem('medico');
+      localStorage.removeItem('nomeMedico');
+      localStorage.removeItem('token');
+      window.location.href = "/appressao/index.html";
+    }
+  </script>
 
 </body>
 </html>
