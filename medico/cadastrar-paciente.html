@@ -78,9 +78,9 @@
   <a class="back-link" href="dashboard.html">← Voltar ao Painel</a>
 
   <script>
-    const medicoEmail = sessionStorage.getItem("medicoEmail");
-
-    if (!medicoEmail) {
+    // Verifica se o médico está logado
+    const medico = JSON.parse(localStorage.getItem("medico"));
+    if (!medico || !medico.email) {
       alert("Você precisa estar logado como médico.");
       window.location.href = "login.html";
     }
@@ -90,21 +90,21 @@
 
       const nome = document.getElementById("nome").value.trim();
       const email = document.getElementById("email").value.trim();
-      const data_nascimento = document.getElementById("dataNascimento").value;
+      const nascimento = document.getElementById("dataNascimento").value;
       const endereco = document.getElementById("endereco").value.trim();
-      const medicamentos = document.getElementById("medicamentos").value.trim();
+      const medicamento = document.getElementById("medicamentos").value.trim();
 
       try {
-        const res = await fetch("https://meu-backend-4840.onrender.com/cadastrar-paciente", {
+        const res = await fetch("https://backend-press.onrender.com/auth/cadastro-paciente", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             nome,
             email,
-            data_nascimento,
+            nascimento,
             endereco,
-            medicamentos,
-            email_medico: medicoEmail
+            medicamento,
+            codigo_medico: medico.email
           })
         });
 
