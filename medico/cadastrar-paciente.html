@@ -112,7 +112,7 @@
 
         if (!res.ok) throw new Error(data.erro || "Erro ao cadastrar paciente");
 
-        alert("Paciente cadastrado com sucesso! Um e-mail foi enviado.");
+        alert("Paciente cadastrado com sucesso! O código foi enviado por e-mail.");
         window.location.href = "listar-pacientes.html";
       } catch (err) {
         console.error("Erro ao cadastrar paciente:", err);
