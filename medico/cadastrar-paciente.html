@@ -94,17 +94,17 @@
       const endereco = document.getElementById("endereco").value.trim();
       const medicamentos = document.getElementById("medicamentos").value.trim();
 
-      try {
-        const res = await fetch('https://appressao.onrender.com/medico/cadastro-paciente'), {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            nome,
-            email,
-            nascimento,
-            endereco,
-            medicamentos,
-            medico_id: medico.id // <-- UUID do médico
+     try {
+      const res = await fetch('https://appressao.onrender.com/medico/cadastro-paciente', {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nome,
+          email,
+          nascimento,
+          endereco,
+          medicamentos,
+          medico_id: medico.id // <-- UUID do médico-- UUID do médico
           })
         });
 
