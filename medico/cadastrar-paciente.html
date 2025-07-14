@@ -95,7 +95,7 @@
       const medicamentos = document.getElementById("medicamentos").value.trim();
 
       try {
-        const res = await fetch("https://appressao.onrender.com/auth/cadastro-paciente", {
+        const res = await fetch("https://appressao.onrender.com/medico/cadastro-paciente", { ... })", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
