@@ -63,7 +63,7 @@
     <label for="email">E-mail</label>
     <input type="email" id="email" required>
 
-    <label for="dataNascimento">Data de nascimento</label>
+    <label for="nascimento">Data de nascimento</label>
     <input type="date" id="dataNascimento" required>
 
     <label for="endereco">Endereço</label>
@@ -78,9 +78,9 @@
   <a class="back-link" href="dashboard.html">← Voltar ao Painel</a>
 
   <script>
-    // Verifica se o médico está logado
+    // Verifica se o médico está logado e tem ID
     const medico = JSON.parse(localStorage.getItem("medico"));
-    if (!medico || !medico.email) {
+    if (!medico || !medico.id) {
       alert("Você precisa estar logado como médico.");
       window.location.href = "login.html";
     }
@@ -90,9 +90,9 @@
 
       const nome = document.getElementById("nome").value.trim();
       const email = document.getElementById("email").value.trim();
-      const nascimento = document.getElementById("dataNascimento").value;
+      const nascimento = document.getElementById("nascimento").value;
       const endereco = document.getElementById("endereco").value.trim();
-      const medicamento = document.getElementById("medicamentos").value.trim();
+      const medicamentos = document.getElementById("medicamentos").value.trim();
 
       try {
         const res = await fetch("https://appressao.onrender.com/auth/cadastro-paciente", {
@@ -103,8 +103,8 @@
             email,
             nascimento,
             endereco,
-            medicamento,
-            codigo_medico: medico.email
+            medicamentos,
+            medico_id: medico.id // <-- UUID do médico
           })
         });
 
@@ -114,8 +114,9 @@
 
         alert("Paciente cadastrado com sucesso! O código foi enviado por e-mail.");
         window.location.href = "listar-pacientes.html";
+
       } catch (err) {
-        console.error("Erro ao cadastrar paciente:", err);
+        console.error("❌ Erro ao cadastrar paciente:", err);
         alert("Erro ao cadastrar paciente.");
       }
     });
