@@ -116,7 +116,7 @@
 
     async function carregarPacientes() {
       try {
-        const res = await fetch("https://backend-press.onrender.com/medico/listar-pacientes", {
+        const res = await fetch("https://appressao.onrender.com/medico/listar-pacientes", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ emailMedico: medico.email })
