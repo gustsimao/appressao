@@ -39,7 +39,7 @@
   </div>
 
   <script>
-    const API_URL = "https://appressao.onrender.com/";
+    const API_URL = "https://appressao.onrender.com";
 
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -47,7 +47,7 @@
       const senha = document.getElementById('senha').value.trim();
 
       try {
-        const res = await fetch(`${API_URL}/appressao/medico/login.html`, {
+        const res = await fetch(`${API_URL}medico/login-medico`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, senha })
