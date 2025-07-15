@@ -47,7 +47,7 @@
       const senha = document.getElementById('senha').value.trim();
 
       try {
-        const res = await fetch(`${API_URL}medico/login-medico`, {
+        const res = await fetch(`${API_URL}/medico/login-medico`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, senha })
